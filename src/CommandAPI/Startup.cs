@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+
 namespace CommandAPI
 {
     public class Startup
@@ -24,8 +26,13 @@ namespace CommandAPI
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var builder = new SqlConnectionStringBuilder();
+            builder.ConnectionString =
+            Configuration.GetConnectionString("CommanderConnection");
+            builder.UserID = Configuration["UserId"];
+            builder.Password = Configuration["Password"];
             services.AddDbContext<CommandContext>(opt => opt.UseSqlServer
-            (Configuration.GetConnectionString("CommanderConnection")));
+            (builder.ConnectionString));
 
             services.AddControllers();
 
