@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
+using AutoMapper;
 
 namespace CommandAPI
 {
@@ -31,8 +32,9 @@ namespace CommandAPI
             Configuration.GetConnectionString("CommanderConnection");
             builder.UserID = Configuration["UserId"];
             builder.Password = Configuration["Password"];
-            services.AddDbContext<CommandContext>(opt => opt.UseSqlServer
-            (builder.ConnectionString));
+            services.AddDbContext<CommandContext>(opt => opt.UseSqlServer(builder.ConnectionString));
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddControllers();
 
