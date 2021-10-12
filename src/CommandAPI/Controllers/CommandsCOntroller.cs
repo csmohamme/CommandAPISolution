@@ -51,5 +51,21 @@ namespace CommandAPI.Contrllers
             var commandReadDto = _mapper.Map<CommandReadDto>(commandModel);
             return CreatedAtRoute(nameof(GetCommandById), new { Id = commandModel.Id }, commandReadDto);
         }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateCommand(int id, CommandUpdateDto commandUpdateDto)
+        {
+            var commandModelFromRepo = _respository.GetCommandById(id);
+
+            if (commandModelFromRepo == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(commandUpdateDto, commandModelFromRepo);
+            _respository.UpdateCommand(commandModelFromRepo);
+            _respository.SaveChanges();
+            return NoContent();
+        }
     }
 }
