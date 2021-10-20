@@ -58,8 +58,7 @@ namespace CommandAPI.Tests
         public void GetAllCommands_Return_200_Ok_WhenDbHasOneResource()
         {
             //Arrange
-            mockRepo.Setup(
-                repo => repo.GetAllCommands()).Returns(GetCommands(1));
+            mockRepo.Setup(repo => repo.GetAllCommands()).Returns(GetCommands(1));
 
             var controller = new CommandsController(mockRepo.Object, mapper);
 
@@ -68,6 +67,21 @@ namespace CommandAPI.Tests
 
             //Assert
             Assert.IsType<OkObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public void GetAllCommands_ReturnsCorrectType_WhenDbHasOneResource()
+        {
+            //Arrange
+            mockRepo.Setup(repo => repo.GetAllCommands()).Returns(GetCommands(1));
+
+            var controller = new CommandsController(mockRepo.Object, mapper);
+
+            //When
+            var result = controller.GetAllCommands();
+
+            //Assert
+            Assert.IsType<ActionResult<IEnumerable<CommandReadDto>>>(result);
         }
         [Fact]
         public void GetAllCommands_ReturnOneItem_WhenDbHasOneResource()
