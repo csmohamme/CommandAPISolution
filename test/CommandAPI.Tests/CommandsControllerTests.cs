@@ -54,6 +54,39 @@ namespace CommandAPI.Tests
             Assert.IsType<OkObjectResult>(result.Result);
         }
 
+        [Fact]
+        public void GetAllCommands_Return_200_Ok_WhenDbHasOneResource()
+        {
+            //Arrange
+            mockRepo.Setup(
+                repo => repo.GetAllCommands()).Returns(GetCommands(1));
+
+            var controller = new CommandsController(mockRepo.Object, mapper);
+
+            //Act
+            var result = controller.GetAllCommands();
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
+        [Fact]
+        public void GetAllCommands_ReturnOneItem_WhenDbHasOneResource()
+        {
+            //Arrange
+            mockRepo.Setup(repo => repo.GetAllCommands()).Returns(GetCommands(1));
+
+            var controller = new CommandsController(mockRepo.Object, mapper);
+
+            //Act
+            var result = controller.GetAllCommands();
+
+            //Assert
+            var OkResult = result.Result as OkObjectResult;
+
+            var commands = OkResult.Value as List<CommandReadDto>;
+
+            Assert.Single(commands);
+        }
 
         private List<Command> GetCommands(int num)
         {
