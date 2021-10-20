@@ -8,29 +8,52 @@ using CommandAPI.Profiles;
 using CommandAPI.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using CommandAPI.Dtos;
 namespace CommandAPI.Tests
 {
-    public class CommandsControllerTests
+    public class CommandsControllerTests : IDisposable
     {
+        Mock<ICommandAPIRepo> mockRepo;
+        CommandsProfile realProfile;
+        MapperConfiguration configuration;
+        IMapper mapper;
+        public CommandsControllerTests()
+        {
+            mockRepo = new Mock<ICommandAPIRepo>();
+
+            realProfile = new CommandsProfile();
+
+            configuration = new MapperConfiguration(cfg =>
+            cfg.AddProfile(realProfile));
+
+            mapper = new Mapper(configuration);
+        }
+
+        public void Dispose()
+        {
+            mockRepo = null;
+            realProfile = null;
+            configuration = null;
+            mapper = null;
+        }
+
         [Fact]
         public void GetCommandItems_Returns200_OK_WhenDbIsEmpty()
         {
             //Arrange
-            var mockRepo = new Mock<ICommandAPIRepo>();
             mockRepo.Setup(repo => repo.GetAllCommands()).Returns(GetCommands(0));
 
             var realProfile = new CommandsProfile();
 
-            var configuration = new MapperConfiguration(cfg =>
-            cfg.AddProfile(realProfile));
-
-            IMapper mapper = new Mapper(configuration);
-
             var controller = new CommandsController(mockRepo.Object, mapper);
-            //When
 
-            //Then
+            //Act
+            var result = controller.GetAllCommands();
+
+            //Assert
+            Assert.IsType<OkObjectResult>(result.Result);
         }
+
 
         private List<Command> GetCommands(int num)
         {
