@@ -204,6 +204,38 @@ namespace CommandAPI.Tests
             Assert.IsType<CreatedAtRouteResult>(result.Result);
 
         }
+
+        [Fact]
+        public void UpdateCommand_Returns404NotFound_WhenNonExistentResourceIDSubmitted()
+        {
+            //Arrange
+            mockRepo.Setup(repo => repo.GetCommandById(0)).Returns(() => null);
+
+            var controller = new CommandsController(mockRepo.Object, mapper);
+
+            //When
+            var result = controller.UpdateCommand(0, new CommandUpdateDto { });
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+
+        }
+
+        [Fact]
+        public void PartialCommandUpdate_Returns404NotFound_WhenNonExistentResourceIDSubmitted()
+        {
+            //Arrange
+            mockRepo.Setup(repo => repo.GetCommandById(0)).Returns(() => null);
+
+            var controller = new CommandsController(mockRepo.Object, mapper);
+
+            //When
+            var result = controller.PartialCommandUpdate(0, new Microsoft.AspNetCore.JsonPatch.JsonPatchDocument<CommandUpdateDto> { });
+
+            //Assert
+            Assert.IsType<NotFoundResult>(result);
+
+        }
         private List<Command> GetCommands(int num)
         {
             var commands = new List<Command>();
